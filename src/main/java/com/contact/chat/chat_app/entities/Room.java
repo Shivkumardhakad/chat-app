@@ -21,5 +21,5 @@ private String id;// mogodb ka unique identyfiere hai
 
 private String roomId;
 
-   List<Massage> massages= new ArrayList<>();
+   List<Message> messages = new ArrayList<>();
 }

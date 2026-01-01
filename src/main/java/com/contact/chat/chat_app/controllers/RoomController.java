@@ -1,6 +1,6 @@
 package com.contact.chat.chat_app.controllers;
 
-import com.contact.chat.chat_app.entities.Massage;
+import com.contact.chat.chat_app.entities.Message;
 import com.contact.chat.chat_app.entities.Room;
 import com.contact.chat.chat_app.repositories.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,14 +50,14 @@ public ResponseEntity<?> createRoom(@RequestBody String roomId){
 
     // get Massages of room
     @GetMapping("/{roomId}/massages")
-    public  ResponseEntity<List<Massage>> getMassage(@PathVariable("roomId") String roomId){
+    public  ResponseEntity<List<Message>> getMassage(@PathVariable("roomId") String roomId){
       Room room =roomRepository.findByRoomId(roomId);
 if(room==null){
     return ResponseEntity.badRequest().build();
 }
-       List<Massage> massages  =room.getMassages();
+       List<Message> messages =room.getMessages();
 
-       return ResponseEntity.ok(massages);
+       return ResponseEntity.ok(messages);
     }
 
 }
