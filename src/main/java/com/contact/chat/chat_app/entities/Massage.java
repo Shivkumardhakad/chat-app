@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Message {
+public class Massage {
 
     private String sender;
     private String content;
     private LocalDateTime timeStamp;
 
-    public Message(String content, String sender) {
+    public Massage(String content, String sender) {
         this.content = content;
         this.sender = sender;
         this.timeStamp= LocalDateTime.now();

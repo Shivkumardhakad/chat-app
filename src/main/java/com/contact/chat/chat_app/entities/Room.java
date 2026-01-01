@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collation = "Rooms")
+@Document(collection = "Rooms")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,5 +21,5 @@ private String id;// mogodb ka unique identyfiere hai
 
 private String roomId;
 
-   List<Message> massages= new ArrayList<>();
+   List<Massage> massages= new ArrayList<>();
 }
