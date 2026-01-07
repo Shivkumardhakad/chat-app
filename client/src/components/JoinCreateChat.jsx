@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import chatIcon from "../assets/speech-bubble.png"; // Placeholder
 import { toast } from "react-hot-toast";
 import { createRoomApi, joinChatApi } from "../services/RoomService";
 import { useChatContext } from "../context/ChatContext";
@@ -22,8 +21,8 @@ const JoinCreateChat = () => {
     }
 
     function validateForm() {
-        if (detail.roomId === "" || detail.userName === "") {
-            toast.error("Invalid Input");
+        if (detail.roomId.trim() === "" || detail.userName.trim() === "") {
+            toast.error("Please fill in all fields");
             return false;
         }
         return true;
@@ -33,7 +32,7 @@ const JoinCreateChat = () => {
         if (validateForm()) {
             try {
                 const room = await joinChatApi(detail.roomId);
-                toast.success("Joined..");
+                toast.success(`Joined room: ${room.roomId}`);
                 setCurrentUser(detail.userName);
                 setRoomId(room.roomId);
                 setConnected(true);
@@ -42,9 +41,8 @@ const JoinCreateChat = () => {
                 if (error.response?.status === 400) {
                     toast.error(error.response.data);
                 } else {
-                    toast.error("Error in joining room");
+                    toast.error("Room not found or error occurred");
                 }
-                console.log(error);
             }
         }
     }
@@ -53,8 +51,7 @@ const JoinCreateChat = () => {
         if (validateForm()) {
             try {
                 const response = await createRoomApi(detail.roomId);
-                console.log(response);
-                toast.success("Room Created Successfully !!");
+                toast.success("Room created successfully!");
                 setCurrentUser(detail.userName);
                 setRoomId(response.roomId);
                 setConnected(true);
@@ -63,29 +60,36 @@ const JoinCreateChat = () => {
                 if (error.response?.status === 400) {
                     toast.error("Room already exists!");
                 } else {
-                    toast.error("Error in creating room");
+                    toast.error("Error creating room");
                 }
-                console.log(error);
             }
         }
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center animate-fade-in">
-            <div className="p-10 border border-[var(--accents-2)] rounded-2xl w-full max-w-md bg-[var(--accents-1)] shadow-2xl flex flex-col gap-6">
-                <div className="text-center">
-                    {/* Adding a sleek header instead of image */}
-                    <h1 className="text-4xl font-extrabold tracking-tight mb-2 bg-gradient-to-r from-[var(--foreground)] to-[var(--accents-5)] bg-clip-text text-transparent">
+        <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+            {/* Background blobs for premium feel */}
+            <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+            <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <div className="glass p-10 rounded-3xl w-full max-w-md shadow-glow flex flex-col gap-8 animate-fade-in z-10 border border-[var(--accents-2)]">
+                <div className="text-center space-y-2">
+                    <div className="inline-block p-3 rounded-2xl bg-[var(--accents-1)] mb-2 shadow-inner border border-[var(--accents-2)]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--foreground)]">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <h1 className="text-4xl font-extrabold tracking-tighter text-gradient">
                         ChatRoom
                     </h1>
-                    <p className="text-[var(--accents-5)]">
-                        Connect securely with your friends in real-time.
+                    <p className="text-[var(--accents-5)] text-sm font-medium">
+                        Enter a room ID to create or join a conversation.
                     </p>
                 </div>
 
-                <div className="space-y-4">
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="userName" className="text-sm font-medium text-[var(--accents-4)]">
+                <div className="space-y-5">
+                    <div className="space-y-2 group">
+                        <label htmlFor="userName" className="text-xs font-semibold text-[var(--accents-5)] uppercase tracking-wider group-focus-within:text-[var(--foreground)] transition-colors">
                             Your Name
                         </label>
                         <input
@@ -94,13 +98,13 @@ const JoinCreateChat = () => {
                             type="text"
                             id="userName"
                             name="userName"
-                            placeholder="Enter your name"
-                            className="w-full transition-all focus:ring-2 focus:ring-[var(--foreground)] focus:border-transparent"
+                            placeholder="e.g. Alice"
+                            className="bg-[var(--accents-1)]/50 focus:bg-[var(--background)] transition-all"
                         />
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="roomId" className="text-sm font-medium text-[var(--accents-4)]">
+                    <div className="space-y-2 group">
+                        <label htmlFor="roomId" className="text-xs font-semibold text-[var(--accents-5)] uppercase tracking-wider group-focus-within:text-[var(--foreground)] transition-colors">
                             Room ID
                         </label>
                         <input
@@ -109,24 +113,24 @@ const JoinCreateChat = () => {
                             value={detail.roomId}
                             type="text"
                             id="roomId"
-                            placeholder="Enter room ID"
-                            className="w-full transition-all focus:ring-2 focus:ring-[var(--foreground)] focus:border-transparent"
+                            placeholder="e.g. room-123"
+                            className="bg-[var(--accents-1)]/50 focus:bg-[var(--background)] transition-all font-mono"
                         />
                     </div>
                 </div>
 
-                <div className="flex gap-3 justify-center mt-4">
+                <div className="flex gap-3 pt-2">
                     <button
                         onClick={joinChat}
-                        className="flex-1 bg-[var(--success)] hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-200 transform hover:scale-[1.02]"
+                        className="flex-1 bg-[var(--foreground)] text-[var(--background)] hover:bg-[var(--accents-7)] font-bold py-3.5"
                     >
-                        Join Room
+                        Join
                     </button>
                     <button
                         onClick={createRoom}
-                        className="flex-1 secondary font-bold py-3 px-4 rounded-lg transition duration-200 transform hover:scale-[1.02]"
+                        className="flex-1 secondary py-3.5"
                     >
-                        Create Room
+                        Create
                     </button>
                 </div>
             </div>

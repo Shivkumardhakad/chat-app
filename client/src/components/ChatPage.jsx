@@ -40,7 +40,10 @@ const ChatPage = () => {
     // Scroll to bottom
     useEffect(() => {
         if (chatBoxRef.current) {
-            chatBoxRef.current.scrollIntoView({ behavior: "smooth" });
+            // Use timeout to ensure DOM updates first
+            setTimeout(() => {
+                chatBoxRef.current.scrollIntoView({ behavior: "smooth" });
+            }, 50);
         }
     }, [messages]);
 
@@ -52,7 +55,7 @@ const ChatPage = () => {
 
             client.connect({}, () => {
                 setStompClient(client);
-                toast.success("Connected to chat");
+                toast.success("Connected");
 
                 client.subscribe(`/topic/room/${roomId}`, (message) => {
                     const newMessage = JSON.parse(message.body);
@@ -107,44 +110,77 @@ const ChatPage = () => {
         }
     };
 
+    // Helper to get initials
+    const getInitials = (name) => {
+        if (!name) return "?";
+        return name.charAt(0).toUpperCase();
+    };
+
     return (
         <div className="flex flex-col h-screen bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
-            <header className="flex-shrink-0 h-16 border-b border-[var(--accents-2)] flex items-center justify-between px-6 bg-[var(--accents-1)]/50 backdrop-blur-md sticky top-0 z-10">
-                <div>
-                    <h1 className="text-xl font-bold tracking-tight">Room: <span className="text-[var(--accents-5)]">{roomId}</span></h1>
-                    <p className="text-xs text-[var(--accents-5)] flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-green-500 block"></span>
-                        {currentUser}
-                    </p>
+            {/* Header */}
+            <header className="flex-shrink-0 h-16 border-b border-[var(--accents-2)] flex items-center justify-between px-6 bg-[var(--background)]/80 backdrop-blur-md sticky top-0 z-20">
+                <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg">
+                        #
+                    </div>
+                    <div>
+                        <h1 className="text-lg font-bold tracking-tight">Room: <span className="font-mono text-[var(--accents-6)]">{roomId}</span></h1>
+                        <div className="flex items-center gap-2 text-xs text-[var(--accents-5)] font-medium">
+                            <span className="w-2 h-2 rounded-full bg-[var(--success)] shadow-[0_0_8px_var(--success)]"></span>
+                            Online as {currentUser}
+                        </div>
+                    </div>
                 </div>
+
                 <button
                     onClick={handleLeave}
-                    className="bg-[var(--accents-1)] text-[var(--error)] border border-[var(--accents-2)] text-sm hover:bg-[var(--accents-2)] hover:border-[var(--accents-3)] py-2 px-4 ml-4 font-semibold"
+                    className="text-xs font-semibold bg-[var(--accents-1)] hover:bg-[var(--error)] hover:text-white hover:border-[var(--error)] text-[var(--accents-5)] border border-[var(--accents-2)] py-2 px-4 rounded-full transition-all duration-300"
                 >
                     Leave Room
                 </button>
             </header>
 
-            <main className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
+            {/* Chat Area */}
+            <main className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 scroll-smooth custom-scrollbar">
                 {messages.map((msg, index) => {
                     const isOwn = msg.sender === currentUser;
                     return (
                         <div
                             key={index}
-                            className={`flex ${isOwn ? "justify-end" : "justify-start"} animate-fade-in`}
+                            className={`flex items-end gap-3 ${isOwn ? "flex-row-reverse" : "flex-row"} animate-fade-in group`}
                         >
-                            <div
-                                className={`max-w-[75%] rounded-2xl px-5 py-3 text-sm shadow-sm
+                            {/* Avatar */}
+                            <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold shadow-md
                         ${isOwn
-                                        ? "bg-[var(--foreground)] text-[var(--background)] rounded-br-sm"
-                                        : "bg-[var(--accents-2)] text-[var(--foreground)] rounded-bl-sm"
-                                    }`}
+                                    ? "bg-[var(--foreground)] text-[var(--background)]"
+                                    : "bg-[var(--accents-2)] text-[var(--accents-6)]"
+                                }`}
                             >
-                                {!isOwn && <p className="text-[11px] font-bold opacity-50 mb-1 block text-blue-400 uppercase tracking-wider">{msg.sender}</p>}
-                                <p className="leading-relaxed font-medium">{msg.content}</p>
-                                <div className={`text-[10px] mt-1 text-right opacity-60 font-mono ${isOwn ? "opacity-40" : ""}`}>
-                                    {formatTime(msg.timeStamp || msg.messageTime)}
+                                {getInitials(msg.sender)}
+                            </div>
+
+                            <div
+                                className={`max-w-[75%] sm:max-w-[60%] flex flex-col ${isOwn ? "items-end" : "items-start"}`}
+                            >
+                                {!isOwn && (
+                                    <span className="text-[10px] text-[var(--accents-5)] mb-1 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        {msg.sender}
+                                    </span>
+                                )}
+
+                                <div className={`px-5 py-3 text-sm shadow-sm relative
+                            ${isOwn
+                                        ? "bg-[var(--foreground)] text-[var(--background)] rounded-2xl rounded-br-sm"
+                                        : "bg-[var(--accents-2)] text-[var(--foreground)] rounded-2xl rounded-bl-sm border border-[var(--accents-3)]"
+                                    }`}
+                                >
+                                    <p className="leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
                                 </div>
+
+                                <span className="text-[10px] text-[var(--accents-4)] mt-1 mx-1 font-mono opacity-60">
+                                    {formatTime(msg.timeStamp || msg.messageTime)}
+                                </span>
                             </div>
                         </div>
                     )
@@ -152,22 +188,32 @@ const ChatPage = () => {
                 <div ref={chatBoxRef} />
             </main>
 
-            <footer className="flex-shrink-0 p-4 border-t border-[var(--accents-2)] bg-[var(--background)] z-20">
-                <div className="max-w-4xl mx-auto flex gap-3 relative">
-                    <input
-                        ref={inputRef}
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") sendMessage();
-                        }}
-                        placeholder="Type a message..."
-                        className="flex-1 bg-[var(--accents-1)] text-[var(--foreground)] border border-[var(--accents-2)] rounded-lg px-6 h-12 focus:ring-1 focus:ring-[var(--foreground)] focus:border-[var(--foreground)] outline-none transition-all placeholder:text-[var(--accents-4)]"
-                    />
+            {/* Input Area */}
+            <footer className="flex-shrink-0 p-4 sm:p-6 border-t border-[var(--accents-2)] bg-[var(--background)]/80 backdrop-blur-md z-20">
+                <div className="max-w-4xl mx-auto flex gap-3 relative items-center">
+                    {/* Input Wrapper for better visuals */}
+                    <div className="flex-1 relative group">
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") sendMessage();
+                            }}
+                            placeholder="Type a message..."
+                            className="w-full bg-[var(--accents-1)] text-[var(--foreground)] border border-[var(--accents-2)] rounded-full pl-6 pr-12 py-3.5 focus:ring-2 focus:ring-[var(--accents-3)] focus:border-transparent outline-none transition-all placeholder:text-[var(--accents-4)] shadow-inner"
+                        />
+                        {/* Decorative icon inside input */}
+                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[var(--accents-4)] group-focus-within:text-[var(--foreground)] transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        </div>
+                    </div>
+
                     <button
                         onClick={sendMessage}
-                        className="rounded-lg w-12 h-12 flex items-center justify-center p-0 bg-[var(--foreground)] text-[var(--background)] hover:bg-[var(--accents-7)] transition-all"
+                        disabled={!input.trim()}
+                        className="w-12 h-12 rounded-full flex items-center justify-center bg-[var(--foreground)] text-[var(--background)] hover:bg-[var(--accents-7)] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
