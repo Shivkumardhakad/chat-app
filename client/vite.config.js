@@ -8,4 +8,13 @@ export default defineConfig({
     // Some libraries use the global object, even in the browser.
     global: 'window',
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })

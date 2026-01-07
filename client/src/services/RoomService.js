@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8080/api/v1/rooms";
+const API_BASE_URL = "/api/v1/rooms";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -23,7 +23,7 @@ export const joinChatApi = async (roomId) => {
 };
 
 export const getMessagesApi = async (roomId) => {
-    // Note: Backend has a typo "massages"
+  // Note: Backend has a typo "massages"
   const response = await api.get(`/${roomId}/massages`);
   return response.data;
 };
