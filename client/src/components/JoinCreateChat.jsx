@@ -59,6 +59,8 @@ const JoinCreateChat = () => {
             } catch (error) {
                 if (error.response?.status === 400) {
                     toast.error("Room already exists!");
+                } else if (error.response?.status === 500) {
+                    toast.error("Server Error: Is MongoDB running?");
                 } else {
                     toast.error("Error creating room");
                 }

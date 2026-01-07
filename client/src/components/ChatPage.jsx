@@ -50,7 +50,7 @@ const ChatPage = () => {
     // WebSocket Connection
     useEffect(() => {
         const connectWebSocket = () => {
-            const sock = new SockJS("http://localhost:8080/chat");
+            const sock = new SockJS("/chat");
             const client = Stomp.over(sock);
 
             client.connect({}, () => {
