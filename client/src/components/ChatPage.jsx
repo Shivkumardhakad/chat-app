@@ -151,10 +151,10 @@ const ChatPage = () => {
                             className={`flex items-end gap-3 ${isOwn ? "flex-row-reverse" : "flex-row"} animate-fade-in group`}
                         >
                             {/* Avatar */}
-                            <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold shadow-md
+                            <div className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold shadow-md
                         ${isOwn
                                     ? "bg-[var(--foreground)] text-[var(--background)]"
-                                    : "bg-[var(--accents-2)] text-[var(--accents-6)]"
+                                    : "bg-gradient-to-tr from-blue-500 to-purple-600 text-white"
                                 }`}
                             >
                                 {getInitials(msg.sender)}
@@ -163,18 +163,11 @@ const ChatPage = () => {
                             <div
                                 className={`max-w-[75%] sm:max-w-[60%] flex flex-col ${isOwn ? "items-end" : "items-start"}`}
                             >
-                                {!isOwn && (
-                                    <span className="text-[10px] text-[var(--accents-5)] mb-1 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        {msg.sender}
-                                    </span>
-                                )}
+                                <span className="text-xs text-[var(--accents-5)] mb-1 ml-1 font-semibold">
+                                    {isOwn ? "You" : msg.sender}
+                                </span>
 
-                                <div className={`px-5 py-3 text-sm shadow-sm relative
-                            ${isOwn
-                                        ? "bg-[var(--foreground)] text-[var(--background)] rounded-2xl rounded-br-sm"
-                                        : "bg-[var(--accents-2)] text-[var(--foreground)] rounded-2xl rounded-bl-sm border border-[var(--accents-3)]"
-                                    }`}
-                                >
+                                <div className={`px-5 py-3 text-sm shadow-sm relative message-bubble ${isOwn ? 'own' : 'other'}`}>
                                     <p className="leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
                                 </div>
 
