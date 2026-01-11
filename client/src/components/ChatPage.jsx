@@ -49,9 +49,11 @@ const ChatPage = () => {
 
     // WebSocket Connection
     useEffect(() => {
+        let client = null;
+
         const connectWebSocket = () => {
             const sock = new SockJS("/chat");
-            const client = Stomp.over(sock);
+            client = Stomp.over(sock);
 
             client.connect({}, () => {
                 setStompClient(client);
@@ -72,8 +74,8 @@ const ChatPage = () => {
         }
 
         return () => {
-            if (stompClient) {
-                stompClient.disconnect();
+            if (client) {
+                client.disconnect();
             }
         };
     }, [roomId, connected]);
