@@ -69,29 +69,25 @@ const JoinCreateChat = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-            {/* Background blobs for premium feel */}
-            <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[100px] pointer-events-none"></div>
-            <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
-
-            <div className="glass p-10 rounded-3xl w-full max-w-md shadow-glow flex flex-col gap-8 animate-fade-in z-10 border border-[var(--accents-2)]">
-                <div className="text-center space-y-2">
-                    <div className="inline-block p-3 rounded-2xl bg-[var(--accents-1)] mb-2 shadow-inner border border-[var(--accents-2)]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[var(--foreground)]">
+        <div className="min-h-screen flex items-center justify-center bg-[var(--surface)]">
+            <div className="bg-white p-10 rounded-lg w-full max-w-[450px] shadow-md flex flex-col gap-8 animate-fade-in border border-[var(--accents-2)]">
+                <div className="text-center space-y-3">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[var(--primary)] text-white mb-2 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                         </svg>
                     </div>
-                    <h1 className="text-4xl font-extrabold tracking-tighter text-gradient">
-                        ChatRoom
+                    <h1 className="text-2xl font-normal text-[var(--foreground)]">
+                        Google Chat Clone
                     </h1>
-                    <p className="text-[var(--accents-5)] text-sm font-medium">
-                        Enter a room ID to create or join a conversation.
+                    <p className="text-[var(--accents-7)] text-base">
+                        Sign in to start chatting
                     </p>
                 </div>
 
-                <div className="space-y-5">
-                    <div className="space-y-2 group">
-                        <label htmlFor="userName" className="text-xs font-semibold text-[var(--accents-5)] uppercase tracking-wider group-focus-within:text-[var(--foreground)] transition-colors">
+                <div className="space-y-6">
+                    <div className="space-y-1">
+                        <label htmlFor="userName" className="text-sm font-medium text-[var(--accents-8)]">
                             Your Name
                         </label>
                         <input
@@ -100,13 +96,13 @@ const JoinCreateChat = () => {
                             type="text"
                             id="userName"
                             name="userName"
-                            placeholder="e.g. Alice"
-                            className="bg-[var(--accents-1)]/50 focus:bg-[var(--background)] transition-all"
+                            placeholder="Enter your name"
+                            className="bg-white focus:bg-white"
                         />
                     </div>
 
-                    <div className="space-y-2 group">
-                        <label htmlFor="roomId" className="text-xs font-semibold text-[var(--accents-5)] uppercase tracking-wider group-focus-within:text-[var(--foreground)] transition-colors">
+                    <div className="space-y-1">
+                        <label htmlFor="roomId" className="text-sm font-medium text-[var(--accents-8)]">
                             Room ID
                         </label>
                         <input
@@ -115,24 +111,24 @@ const JoinCreateChat = () => {
                             value={detail.roomId}
                             type="text"
                             id="roomId"
-                            placeholder="e.g. room-123"
-                            className="bg-[var(--accents-1)]/50 focus:bg-[var(--background)] transition-all font-mono"
+                            placeholder="Enter room ID"
+                            className="bg-white focus:bg-white"
                         />
                     </div>
                 </div>
 
-                <div className="flex gap-3 pt-2">
-                    <button
-                        onClick={joinChat}
-                        className="flex-1 bg-[var(--foreground)] text-[var(--background)] hover:bg-[var(--accents-7)] font-bold py-3.5"
-                    >
-                        Join
-                    </button>
+                <div className="flex justify-end gap-2 pt-2">
                     <button
                         onClick={createRoom}
-                        className="flex-1 secondary py-3.5"
+                        className="secondary"
                     >
-                        Create
+                        Create Room
+                    </button>
+                    <button
+                        onClick={joinChat}
+                        className="bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)]"
+                    >
+                        Join
                     </button>
                 </div>
             </div>
